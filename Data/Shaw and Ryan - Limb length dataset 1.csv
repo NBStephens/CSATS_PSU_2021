@@ -1,0 +1,18 @@
+﻿ID,Species,SpeciesCode,FemurLength,HumerusLength
+HS1,Homo sapiens,1,402,285
+HS2,Homo sapiens,1,409,306
+HS3,Homo sapiens,1,395,301
+HS4,Homo sapiens,1,384,277
+HS5,Homo sapiens,1,411,296
+HS6,Homo sapiens,1,402,290
+HS7,Homo sapiens,1,470,337
+PP1,Pongo pygmaeus,2,291,381
+PP2,Pongo pygmaeus,2,298,408
+PP3,Pongo pygmaeus,2,254,323
+PP4,Pongo pygmaeus,2,245,325
+PP5,Pongo pygmaeus,2,289,362
+PP6,Pongo pygmaeus,2,283,343
+PP7,Pongo pygmaeus,2,303,384
+f1,Neanderthal,3,460,330
+f2,H. erectus,4,440,310
+f3,Lucy,5,263,236

@@ -1,0 +1,1 @@
+conda create --name=streamlit_csats --file=requirements.txt
