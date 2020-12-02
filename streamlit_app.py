@@ -319,6 +319,21 @@ def main():
                     st.plotly_chart(fig, use_container_width=True)
                 except ValueError:
                     st.write("Select your x axis and y axis from the dropdowns")
+        elif str(option) == "Pie charts":
+            df = current_df
+            val_list = [x for x in df.columns[df.dtypes != 'object']]
+            name_list = [x for x in df.columns[df.dtypes == 'object']]
+            with st.beta_expander(f"View/Hide {option.lower()}", expanded=True):
+                pie_names = st.selectbox("Names", name_list)
+                pie_vals = st.selectbox("Values", val_list)
+                try:
+                    fig = px.pie(df, values=pie_vals, names=pie_names, title=f'{pie_vals} colored by {pie_names}')
+                    fig.update_traces(textposition='inside', textinfo='percent+label')
+                    st.plotly_chart(fig, use_container_width=True)
+                except ValueError:
+                    st.write("Select your x axis and y axis from the dropdowns")
+
+
 
 
     col1_lower, col2_lower = st.beta_columns(2)
@@ -357,15 +372,15 @@ def main():
         """
     with st.sidebar.beta_expander("Educational resources:", expanded=True):
         """
-        [MorphoSource](https://www.morphosource.org/index.php)\n
-        """
-
-        """
+        [![MorphoSource](https://www.morphosource.org/themes/morphosource/graphics/morphosource/morphosourceLogo.png)](https://www.morphosource.org/index.php)\n     
+             
+        [Smithsonian Human Origins](https://humanorigins.si.edu/)\n
+        
         [The Human Fossil Record](https://human-fossil-record.org/)\n
-        """
-
-        """
-        [![Africanfossils.org](https://africanfossils.org/sites/all/themes/fossil/images/homepage.png)](https://human-fossil-record.org/)               
+      
+        [Digital Morphology](http://www.digimorph.org/index.phtml)\n    
+      
+        [![Africanfossils.org](https://africanfossils.org/sites/all/themes/fossil/images/homepage.png)](https://human-fossil-record.org/)\n               
         """
 
 
