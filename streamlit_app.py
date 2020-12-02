@@ -356,22 +356,18 @@ def main():
 
         """
     with st.sidebar.beta_expander("Educational resources:", expanded=True):
-        local_css("./visuals/style.css")
-        remote_css('https://fonts.googleapis.com/icon?family=Material+Icons')
-
-        icon("search")
-        selected = st.sidebar.text_input("", "Search...")
-        button_clicked = st.sidebar.button("OK")
-        if button_clicked:
-            st.sidebar.write("I've been clicked!")
-
-
-        st.sidebar.markdown(body="""
+        """
         [MorphoSource](https://www.morphosource.org/index.php)\n
-        [The Human Fossil Record](https://human-fossil-record.org/)\n             
-        [<img src="https:/africanfossils.org/sites/all/themes/fossil/images/homepage_2x.png" width="250"/>](https://human-fossil-record.org/)\n
-        """,
-        unsafe_allow_html=True)
+        """
+
+        """
+        [The Human Fossil Record](https://human-fossil-record.org/)\n
+        """
+
+        """
+        [![Africanfossils.org](https://africanfossils.org/sites/all/themes/fossil/images/homepage.png)](https://human-fossil-record.org/)               
+        """
+
 
 
 
