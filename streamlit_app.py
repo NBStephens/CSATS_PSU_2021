@@ -208,6 +208,21 @@ def download_link(object_to_download, download_filename, download_link_text):
 
     return f'<a href="data:file/txt;base64,{b64}" download="{download_filename}">{download_link_text}</a>'
 
+
+def icon(icon_name):
+    st.markdown(f'<i class="material-icons">{icon_name}</i>', unsafe_allow_html=True)
+
+def local_css(file_name):
+    with open(file_name) as f:
+        st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+
+def remote_css(url):
+    st.markdown(f'<link href="{url}" rel="stylesheet">', unsafe_allow_html=True)
+
+def icon(icon_name):
+    st.markdown(f'<i class="material-icons">{icon_name}</i>', unsafe_allow_html=True)
+
+
 ###Begin of main application
 
 def main():
@@ -222,14 +237,6 @@ def main():
     # Welcome to CSATS Morphosource Workshop! :skull:
 
     """
-    with st.beta_expander("If you have any questions, please reach out:", expanded=True):
-        """ 
-
-        Slack Chat:speech_balloon: : [CSATS](https://app.slack.com/client/T9HGD7NBY/CTN0FTQCA)\n
-        Email :email: : [Tim Ryan] (tmr21@psu.edu)\n
-        Email :email: : [Nick stephens] (nbs49@psu.edu)\n    
-
-        """
 
     col1, col2 = st.beta_columns(2)
     # Writes out a thing line across the gui page.
@@ -265,7 +272,7 @@ def main():
                 st.markdown(tmp_download_link, unsafe_allow_html=True)
 
     with col2:
-        with st.beta_expander("Choose viewing options"):
+        with st.beta_expander("Choose viewing options", expanded=True):
             option = st.selectbox('Select a display type',
                                   ('Box plots', 'Scatter plots', 'Pie charts', 'Aleph viewer'))
             if option != "Aleph viewer":
@@ -314,8 +321,6 @@ def main():
                     st.write("Select your x axis and y axis from the dropdowns")
 
 
-
-
     col1_lower, col2_lower = st.beta_columns(2)
     with col1_lower:
         with st.beta_expander("Upload PDF"):
@@ -335,68 +340,39 @@ def main():
         title = st.empty()
 
 
-    st.sidebar.title("About")
-    st.sidebar.info(
-        "This app helps students visualizes scientific data to explore our evolutionary history"
-        "\n\n"
-        "It is maintained by [Nick Stephens](https://github.com/NBStephens/). "
-        "If you have any technical issues please email nbs49@psu.edu"
-    )
+
+    with st.sidebar.beta_expander("About"):
+            "This app helps students visualizes scientific data to explore our evolutionary history"
+            "\n\n"
+            "It is maintained by [Nick Stephens](https://github.com/NBStephens/). "
+            "If you have any technical issues please email nbs49@psu.edu"
+
+    with st.sidebar.beta_expander("If you have any questions, please reach out:", expanded=True):
+        """ 
+
+        Slack Chat:speech_balloon: : [CSATS](https://app.slack.com/client/T9HGD7NBY/CTN0FTQCA)\n
+        Email :email: : [Tim Ryan] (tmr21@psu.edu)\n
+        Email :email: : [Nick stephens] (nbs49@psu.edu)\n    
+
+        """
+    with st.sidebar.beta_expander("Educational resources:", expanded=True):
+        local_css("./visuals/style.css")
+        remote_css('https://fonts.googleapis.com/icon?family=Material+Icons')
+
+        icon("search")
+        selected = st.sidebar.text_input("", "Search...")
+        button_clicked = st.sidebar.button("OK")
+        if button_clicked:
+            st.sidebar.write("I've been clicked!")
+
+
+        st.sidebar.markdown(body="""
+        [MorphoSource](https://www.morphosource.org/index.php)\n
+        [The Human Fossil Record](https://human-fossil-record.org/)\n             
+        [<img src="https:/africanfossils.org/sites/all/themes/fossil/images/homepage_2x.png" width="250"/>](https://human-fossil-record.org/)\n
+        """,
+        unsafe_allow_html=True)
+
+
 
 main()
-
-with st.beta_expander(label="", expanded=False):
-    '''
-    
-    #get_awesome_data_repo()
-    
-    categories_and_files = get_categories_and_file_names()
-    
-    category_file_count = {k: f"{k} ({len(v)})" for k, v in categories_and_files.items()}
-    selected_topic = st.sidebar.selectbox(
-        "Select topic",
-        options=sorted(categories_and_files.keys()),
-        format_func=category_file_count.get,
-    )
-    
-    category_data = categories_and_files[selected_topic]
-    
-    data_titles = {k: v.get("title") for k, v in category_data.items()}
-    
-    selected_data = st.sidebar.selectbox(
-        "Select data", options=sorted(category_data.keys()), format_func=data_titles.get
-    )
-    
-    show_data_count_by_topic = st.sidebar.checkbox("Show data count by topic", value=True)
-    
-    selected_data_info = category_data[selected_data]
-    
-    title.title(selected_data_info["title"])
-    data_image = selected_data_info.get("image", None)
-    if data_image and data_image != "none":
-        st.image(data_image, width=200)
-    
-    create_info_table(selected_data_info)
-    
-    show_homepage(selected_data_info)
-    
-    if show_data_count_by_topic:
-        st.title(body="Data count by topic")
-        source = pd.DataFrame(
-            {
-                "Topic": list(categories_and_files.keys()),
-                "Number of data": [len(i) for i in categories_and_files.values()],
-            }
-        )
-    
-        chart = (
-            alt.Chart(source)
-            .mark_bar()
-            .encode(alt.Y("Topic", title=""), alt.X("Number of data", title=""))
-            .properties(height=600)
-        )
-    
-        text = chart.mark_text(align="left", baseline="middle", dx=3).encode(text="Number of data")
-    
-        st.altair_chart(chart + text)
-    '''
