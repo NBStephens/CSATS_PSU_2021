@@ -1,21 +1,16 @@
-import io
-import os
 import git
-import math
-#import yaml
 import base64
 import pathlib
 import requests
-import numpy as np
 import pandas as pd
 import altair as alt
 import streamlit as st
 import plotly.express as px
 import plotly.figure_factory as ff
 import streamlit.components.v1 as components
-from PIL import Image
-from collections import namedtuple
 from typing import Dict, Tuple, Union
+from matplotlib import cm
+import matplotlib
 
 #Page athestics
 current_dir = pathlib.Path.cwd()
@@ -186,6 +181,7 @@ def download_link(object_to_download, download_filename, download_link_text):
 
     return f'<a href="data:file/txt;base64,{b64}" download="{download_filename}">{download_link_text}</a>'
 
+
 def main():
     get_CASTS_data_repo()
 
@@ -272,13 +268,30 @@ def main():
                 color_by = st.selectbox("Select category to color variable by", color_list)
                 x_axis = st.selectbox("X axis", x_list)
                 y_axis = st.selectbox("Y axis", y_list)
+                scatter_trendline = None
+                point_size = None
+                if df[str(color_by)].nunique() > 10:
+                    color_num = px.colors.qualitative.Alphabet
+                else:
+                    color_num = None
                 try:
                     if st.checkbox("Adjust point size by another variable"):
                         point_size = st.selectbox("Point variable", size_list)
-                    else:
-                        point_size = None
-                    fig = px.scatter(df, x=str(x_axis), y=str(y_axis), color=color_by, size=point_size, template=template)
+                    if st.checkbox("Fit line"):
+                        fit_dict = {"Ordinary least squares": "ols", "Local regression": "lowess"}
+                        fit_list = [k for k, v in fit_dict.items()]
+                        scatter_trendline = st.selectbox("Fit type", fit_list)
+                        scatter_trendline = fit_dict[scatter_trendline]
+                    fig = px.scatter(df, x=str(x_axis), y=str(y_axis), color=df[str(color_by)].astype(str),
+                                     color_discrete_sequence=color_num,
+                                     size=point_size, trendline=scatter_trendline, template=template)
                     st.plotly_chart(fig, use_container_width=True)
+                    #Resuls are hideous
+                    #if scatter_trendline == "ols" and not None:
+                        #fit_results = px.get_trendline_results(fig)
+                        #st.write(fit_results)
+                        #st.write(fit_results.query("Species == 'Homo sapiens'").px_fit_results.iloc[0].summary())
+                        #results.query(f"sex == 'Male' and smoker == 'Yes'").px_fit_results.iloc[0].summary()
                 except ValueError:
                     st.write("Select your x axis and y axis from the dropdowns")
 
@@ -345,23 +358,23 @@ def main():
 
 
     #This doesn't work on the streamlit hosted version, likely due to the unsafe html setting
-    col1_lower, col2_lower = st.beta_columns(2)
-    with col1_lower:
-        with st.beta_expander("Upload PDF"):
-            pdf_file = st.file_uploader("", type=['pdf'])
-        if pdf_file:
-            with st.beta_expander("View or hide PDF"):
-                pdf_view_size_ratio = st.slider("PDF viewer size", min_value=1, max_value=100, value=47)
-                pdf_width = int(np.ceil(1920 * (pdf_view_size_ratio / 100)))
-                pdf_height = int(np.ceil(pdf_width / 0.77))
-                base64_pdf = base64.b64encode(pdf_file.read()).decode('utf-8')
-                pdf_display = f'<embed src="data:application/pdf;base64,{base64_pdf}" width={pdf_width} height={pdf_height} type="application/pdf">'
-                st.markdown(pdf_display,
-                            unsafe_allow_html=True)
+    #col1_lower, col2_lower = st.beta_columns(2)
+    #with col1_lower:
+    #    with st.beta_expander("Upload PDF"):
+    #        pdf_file = st.file_uploader("", type=['pdf'])
+    #    if pdf_file:
+    #        with st.beta_expander("View or hide PDF"):
+    #            pdf_view_size_ratio = st.slider("PDF viewer size", min_value=1, max_value=100, value=47)
+    #            pdf_width = int(np.ceil(1920 * (pdf_view_size_ratio / 100)))
+    #            pdf_height = int(np.ceil(pdf_width / 0.77))
+    #            base64_pdf = base64.b64encode(pdf_file.read()).decode('utf-8')
+    #            pdf_display = f'<embed src="data:application/pdf;base64,{base64_pdf}" width={pdf_width} height={pdf_height} type="application/pdf">'
+    #            st.markdown(pdf_display,
+    #                        unsafe_allow_html=True)
 
 
-    with col2_lower:
-        title = st.empty()
+    #with col2_lower:
+    #    title = st.empty()
 
 
 
