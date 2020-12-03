@@ -184,12 +184,11 @@ def download_link(object_to_download, download_filename, download_link_text):
 
 def main():
     get_CASTS_data_repo()
-
     data_dict = get_datasets_and_file_names()
+    st.sidebar.image(workshop_logo, width=275, output_format="PNG")
+    st.sidebar.image([morpho_logo, psu_logo], width=120, caption=["Duke University", "FEMR Lab"], output_format="PNG")
 
     csv_list = [k for k, v in data_dict.items()]
-    st.sidebar.image(workshop_logo, width=275, output_format="PNG")
-    st.sidebar.image([morpho_logo, psu_logo], width=130, caption=["Duke University", "FEMR Lab"], output_format="PNG")
     """
     # Welcome to CSATS Morphosource Workshop! :skull:
 
