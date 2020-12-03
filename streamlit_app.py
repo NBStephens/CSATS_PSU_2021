@@ -293,7 +293,11 @@ def main():
                         #st.write(fit_results.query("Species == 'Homo sapiens'").px_fit_results.iloc[0].summary())
                         #results.query(f"sex == 'Male' and smoker == 'Yes'").px_fit_results.iloc[0].summary()
                 except ValueError:
-                    st.write("Select your x axis and y axis from the dropdowns")
+                    nans = df[str(point_size)].isnull().values.any()
+                    if nans:
+                        st.error(f"There are nan (not a number) values in the {point_size} column.")
+                    else:
+                        st.write("Select your x axis and y axis from the dropdowns")
         elif str(option) == "Scatter plots 3d":
             df = current_df
             color_list = df.columns
