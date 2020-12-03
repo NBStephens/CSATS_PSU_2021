@@ -22,7 +22,7 @@ slack_link = r"https://user-images.githubusercontent.com/819186/51553744-4130b58
 
 
 plot_theme = ["plotly", "plotly_white", "plotly_dark", "ggplot2", "seaborn", "simple_white", "none"]
-plotting_options = ['Box plots', 'Scatter plots', 'Pie charts', 'Aleph viewer', 'Histograms', "Joyplot"]
+plotting_options = ['Box plots', 'Scatter plots', 'Scatter plots 3d', 'Pie charts', 'Aleph viewer', 'Histograms', "Joyplot"]
 
 
 
@@ -243,7 +243,7 @@ def main():
 
         elif str(option) == "Box plots":
             df = current_df
-            x_list = [x for x in df.columns[df.dtypes == 'object']]
+            x_list = [x for x in df.columns[df.dtypes != 'float64']]
             y_list = [x for x in df.columns[df.dtypes != 'object']]
             with st.beta_expander(f"View/Hide {option.lower()}", expanded=True):
                 x_axis = st.selectbox("X axis", x_list)
@@ -294,6 +294,31 @@ def main():
                         #results.query(f"sex == 'Male' and smoker == 'Yes'").px_fit_results.iloc[0].summary()
                 except ValueError:
                     st.write("Select your x axis and y axis from the dropdowns")
+        elif str(option) == "Scatter plots 3d":
+            df = current_df
+            color_list = df.columns
+            size_list = [x for x in df.columns[df.dtypes != 'object']]
+            x_list = [x for x in df.columns[df.dtypes != 'object']]
+            y_list = [x for x in df.columns[df.dtypes != 'object']]
+            z_list = [x for x in df.columns[df.dtypes != 'object']]
+            with st.beta_expander(f"View/Hide {option.lower()}", expanded=True):
+                color_by = st.selectbox("Select category to color variable by", color_list)
+                x_axis = st.selectbox("X axis", x_list)
+                y_axis = st.selectbox("Y axis", y_list)
+                z_axis = st.selectbox("Z axis", z_list)
+                point_size = None
+                if df[str(color_by)].nunique() > 10:
+                    color_num = px.colors.qualitative.Alphabet
+                else:
+                    color_num = None
+
+                if st.checkbox("Adjust point size by another variable"):
+                    point_size = st.selectbox("Point variable", size_list)
+                fig = px.scatter_3d(df, x=str(x_axis), y=str(y_axis), z=str(z_axis),
+                                    color=df[str(color_by)].astype(str), color_discrete_sequence=color_num,
+                                    size=point_size,
+                                    template=template)
+                st.plotly_chart(fig, use_container_width=True)
 
         elif str(option) == "Pie charts":
             df = current_df
