@@ -437,7 +437,7 @@ def main():
       
         [Digital Morphology](http://www.digimorph.org/index.phtml)\n    
       
-        [![Africanfossils.org](https://africanfossils.org/sites/all/themes/fossil/images/homepage.png)](https://human-fossil-record.org/)\n               
+        [![Africanfossils.org](https://africanfossils.org/sites/all/themes/fossil/images/homepage.png)](https://africanfossils.org/)\n               
         """
 
 
