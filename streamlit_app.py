@@ -24,21 +24,17 @@ psu_logo = "https://www.underconsideration.com/brandnew/archives/penn_state_logo
 workshop_logo = "https://www.csats.psu.edu/assets/uploads/csats-logo-new.jpg"
 workshop_icon = "http://equity.psu.edu/communications-marketing/assets/psugoogle250p.jpg"
 slack_link = r"https://user-images.githubusercontent.com/819186/51553744-4130b580-1e7c-11e9-889e-486937b69475.png"
+
+
 plot_theme = ["plotly", "plotly_white", "plotly_dark", "ggplot2", "seaborn", "simple_white", "none"]
+plotting_options = ['Box plots', 'Scatter plots', 'Pie charts', 'Aleph viewer', 'Histograms', "Joyplot"]
+
+
 
 st.set_page_config(page_title="CSATS Morphosource workshop",
                         page_icon=workshop_icon,
                         layout='wide',
                         initial_sidebar_state='auto')
-
-
-CORRECTIONS = {
-    "DOI: ": "DOI ",
-    "see: ": "see ",
-    "from: ": "from ",
-    "tables: ": "tables ",
-    "1981â€“2016": "1981-2016",
-}
 
 @st.cache
 def get_CASTS_data_repo():
@@ -68,22 +64,6 @@ def get_datasets_and_file_names() -> Dict:
         data_files.update({str(file).replace(".csv", ""): file})
     return data_files
 
-
-def broken_funciton():
-        with file.open() as open_file:
-            open_file_content = open_file.read()
-            for old, new in CORRECTIONS.items():
-                open_file_content = open_file_content.replace(old, new)
-            #data_info = yaml.load(open_file_content, Loader=yaml.FullLoader)
-
-        #if category in category_files:
-            #category_files[category][file_name] = data_info
-        #else:
-         #   category_files[category] = {file_name: data_info}
-    #except UnicodeDecodeError as err:
-     #   category_files[category][file_name] = "NOT READABLE"
-        # logging.exception("Error. Could not read %s", file.name, exc_info=err)
-
 def get_data_info(category: str, file_name: str) -> Dict:
     """Returns a dictionary of information on the specified file
 
@@ -104,7 +84,6 @@ def get_data_info(category: str, file_name: str) -> Dict:
     with path.open() as open_file:
         data = yaml.load(open_file.read(), Loader=yaml.FullLoader)
     return data
-
 
 def create_info_table(selected_data_info: Dict):
     """Writes the information to the table
@@ -160,7 +139,6 @@ def check_url(url: str) -> Tuple[bool, Union[str, requests.Response]]:
     except requests.exceptions.MissingSchema:
         return check_url("https://" + url)
 
-
 def show_homepage(data_info):
     """Shows information on the availability of the url to the user"""
     homepage = data_info["homepage"]
@@ -207,23 +185,6 @@ def download_link(object_to_download, download_filename, download_link_text):
     b64 = base64.b64encode(object_to_download.encode()).decode()
 
     return f'<a href="data:file/txt;base64,{b64}" download="{download_filename}">{download_link_text}</a>'
-
-
-def icon(icon_name):
-    st.markdown(f'<i class="material-icons">{icon_name}</i>', unsafe_allow_html=True)
-
-def local_css(file_name):
-    with open(file_name) as f:
-        st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
-
-def remote_css(url):
-    st.markdown(f'<link href="{url}" rel="stylesheet">', unsafe_allow_html=True)
-
-def icon(icon_name):
-    st.markdown(f'<i class="material-icons">{icon_name}</i>', unsafe_allow_html=True)
-
-
-###Begin of main application
 
 def main():
     get_CASTS_data_repo()
@@ -274,7 +235,7 @@ def main():
     with col2:
         with st.beta_expander("Choose viewing options", expanded=True):
             option = st.selectbox('Select a display type',
-                                  ('Box plots', 'Scatter plots', 'Pie charts', 'Aleph viewer'))
+                                  (plotting_options))
             if option != "Aleph viewer":
                 template = st.selectbox("Plot theme", plot_theme)
 
@@ -300,6 +261,7 @@ def main():
                     st.plotly_chart(fig, use_container_width=True)
                 except ValueError:
                     st.write("Select your x axis and y axis from the dropdowns")
+
         elif str(option) == "Scatter plots":
             df = current_df
             color_list = df.columns
@@ -319,6 +281,7 @@ def main():
                     st.plotly_chart(fig, use_container_width=True)
                 except ValueError:
                     st.write("Select your x axis and y axis from the dropdowns")
+
         elif str(option) == "Pie charts":
             df = current_df
             val_list = [x for x in df.columns[df.dtypes != 'object']]
@@ -327,15 +290,61 @@ def main():
                 pie_names = st.selectbox("Names", name_list)
                 pie_vals = st.selectbox("Values", val_list)
                 try:
-                    fig = px.pie(df, values=pie_vals, names=pie_names, title=f'{pie_vals} colored by {pie_names}')
+                    fig = px.pie(df, values=pie_vals, names=pie_names, title=f'{pie_vals} colored by {pie_names}', template=template)
                     fig.update_traces(textposition='inside', textinfo='percent+label')
                     st.plotly_chart(fig, use_container_width=True)
                 except ValueError:
                     st.write("Select your x axis and y axis from the dropdowns")
 
+        elif str(option) == "Histograms":
+            df = current_df
+            val_list = [x for x in df.columns[df.dtypes != 'object']]
+            name_list = df.columns
+            with st.beta_expander(f"View/Hide {option.lower()}", expanded=True):
+                hist_vals = st.selectbox("Values", val_list)
+                max_slider = df[hist_vals].nunique()
+                hist_title = f'Histogram of {hist_vals}'
+                cat_names = None
+                log_val = False
+                bin_num = st.slider("Number of bins", min_value=1, max_value=max_slider, value=int(max_slider*0.5))
+                if st.checkbox("Separate by category"):
+                    cat_names = st.selectbox("Category", name_list)
+                    hist_title = f'Histogram of {hist_vals} by {cat_names}'
+                if st.checkbox("Log values"):
+                    log_val = True
+                try:
+                    fig = px.histogram(df,
+                                       x=hist_vals,
+                                       title=hist_title,
+                                       color=cat_names,
+                                       nbins=bin_num,
+                                       #labels={'pie': 'total bill'},  # can specify one label per df column
+                                       opacity=0.8,
+                                       log_y=log_val,  # represent bars with log scale
+                                       template=template
+                                       )
+                    st.plotly_chart(fig, use_container_width=True)
+                except ValueError:
+                    st.write("Select your x axis and y axis from the dropdowns")
+        elif str(option) == "Joyplot":
+            df = current_df
+            val_list = [x for x in df.columns[df.dtypes != 'object']]
+            name_list = [x for x in df.columns[df.dtypes != 'float64']]
+            with st.beta_expander(f"View/Hide {option.lower()}", expanded=True):
+                joy_name = st.selectbox("Groups", name_list)
+                joy_vals = st.selectbox("Values", val_list)
+                joy_title = f'Joyplot of {joy_vals} by {joy_name}'
+                fig = px.violin(df,
+                                y=joy_name,
+                                x=val_list,
+                                color=joy_name,
+                                orientation='h',
+                                title=joy_title,
+                                template=template).update_traces(side='positive', width=2)
+                st.plotly_chart(fig, use_container_width=True)
 
 
-
+    #This doesn't work on the streamlit hosted version, likely due to the unsafe html setting
     col1_lower, col2_lower = st.beta_columns(2)
     with col1_lower:
         with st.beta_expander("Upload PDF"):
