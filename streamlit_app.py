@@ -314,11 +314,18 @@ def main():
 
                 if st.checkbox("Adjust point size by another variable"):
                     point_size = st.selectbox("Point variable", size_list)
-                fig = px.scatter_3d(df, x=str(x_axis), y=str(y_axis), z=str(z_axis),
-                                    color=df[str(color_by)].astype(str), color_discrete_sequence=color_num,
-                                    size=point_size,
-                                    template=template)
-                st.plotly_chart(fig, use_container_width=True)
+                try:
+                    fig = px.scatter_3d(df, x=str(x_axis), y=str(y_axis), z=str(z_axis),
+                                        color=df[str(color_by)].astype(str), color_discrete_sequence=color_num,
+                                        size=point_size,
+                                        template=template)
+                    st.plotly_chart(fig, use_container_width=True)
+                except ValueError:
+                    nans = df[str(point_size)].isnull().values.any()
+                    if nans:
+                        st.error(f"There are nan (not a number) values in the {point_size} column.")
+
+
 
         elif str(option) == "Pie charts":
             df = current_df
