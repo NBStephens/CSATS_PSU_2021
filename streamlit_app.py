@@ -425,7 +425,7 @@ def main():
 
         Slack Chat:speech_balloon: : [CSATS](https://app.slack.com/client/T9HGD7NBY/CTN0FTQCA)\n
         Email :email: : [Tim Ryan] (tmr21@psu.edu)\n
-        Email :email: : [Nick stephens] (nbs49@psu.edu)\n    
+        Email :email: : [Nick Stephens] (nbs49@psu.edu)\n    
 
         """
     with st.sidebar.beta_expander("Educational resources:", expanded=True):
