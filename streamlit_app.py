@@ -38,7 +38,7 @@ def get_CASTS_data_repo():
         git.Git(".").clone("https://github.com/NBStephens/CSATS_PSU_2021.git")
     except git.GitCommandError:
         st.write(pathlib.Path.cwd())
-        repo = git.Repo("https://github.com/NBStephens/CSATS_PSU_2021.git")
+        repo = git.Repo("./")
         repo.remotes.origin.pull()
 
 
