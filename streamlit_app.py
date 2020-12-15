@@ -6,6 +6,7 @@ import pandas as pd
 import altair as alt
 import streamlit as st
 import plotly.express as px
+import plotly.graph_objects as go
 import plotly.figure_factory as ff
 import streamlit.components.v1 as components
 from typing import Dict, Tuple, Union
@@ -22,7 +23,7 @@ slack_link = r"https://user-images.githubusercontent.com/819186/51553744-4130b58
 
 
 plot_theme = ["plotly", "plotly_white", "plotly_dark", "ggplot2", "seaborn", "simple_white", "none"]
-plotting_options = ['Box plots', 'Scatter plots', 'Scatter plots 3d', 'Pie charts', 'Histograms', 'Joyplot', 'Aleph viewer']
+plotting_options = ['Box plots', 'Violin plots', 'Scatter plots', 'Scatter plots 3d', 'Line plot', 'Histograms', 'Pie charts', 'Joyplot', 'Aleph viewer']
 
 
 
@@ -37,8 +38,11 @@ def get_CASTS_data_repo():
     try:
         git.Git(".").clone("https://github.com/NBStephens/CSATS_PSU_2021.git")
     except git.GitCommandError:
-        repo = git.Repo("./")
-        repo.remotes.origin.pull()
+        try:
+            repo = git.Repo("./")
+            repo.remotes.origin.pull()
+        except:
+            pass
 
 
 #@st.cache(suppress_st_warning=True)
@@ -204,7 +208,7 @@ def main():
     col1, col2 = st.beta_columns(2)
     # Writes out a thing line across the gui page.
 
-    # TODO line graph
+
     # TODO bar graph
     # TODO Remove log names
 
@@ -420,8 +424,6 @@ def main():
             df = current_df
             val_list = [x for x in df.columns[df.dtypes != 'object']]
             name_list = df.columns
-
-            log_val = False
             with st.beta_expander(f"View/Hide {option.lower()}", expanded=True):
                 col1, col2, col3, col4, col5 = st.beta_columns((1, 3, 1, 1, 1))
                 with col1:
@@ -435,6 +437,7 @@ def main():
                         view_legend = True
                     else:
                         view_legend = False
+
                 with col4:
                     if st.checkbox("Plot by variable"):
                         cat_names = st.selectbox("Category", name_list)
@@ -465,6 +468,155 @@ def main():
                     st.plotly_chart(fig, use_container_width=True)
                 except ValueError:
                     st.write("Select your x axis and y axis from the dropdowns")
+
+        elif str(option) == "Violin plots":
+            df = current_df
+            val_list = df.columns
+            binary_list = [x for x in df.columns if df[str(x)].nunique() == 2]
+            name_list = df.columns
+            split_plot = False
+            with st.beta_expander(f"View/Hide {option.lower()}", expanded=True):
+                col1, col2, col3, col4, col5 = st.beta_columns((1, 1, 1, 1, 1))
+                with col1:
+                    violin_x_vals = st.selectbox("X-axis values", val_list)
+                    legend_title = f'{violin_x_vals}'
+                    if df[str(violin_x_vals)].nunique() > 10:
+                        cat_color = px.colors.qualitative.Alphabet
+                    else:
+                        cat_color = None
+                with col2:
+                    violin_y_vals = st.selectbox("Y-axis values", val_list)
+                    if st.checkbox("Second Y-axis"):
+                        grouped_violin = True
+                        violin_y_vals_2 = st.selectbox("Second y-axis values", val_list)
+                        legend_title = f''
+                        violin_title = f'Violin plot of {violin_y_vals} and {violin_y_vals_2} by {violin_x_vals} '
+                    else:
+                        grouped_violin = False
+                        violin_title = f'Violin plot of {violin_y_vals} by {violin_x_vals}'
+
+
+                with col3:
+                    chart_height = st.slider("Chart height", min_value=1, max_value=1440, value=500, step=1)
+                    cat_spacing = float(st.slider("Distribution overlap", min_value=1, max_value=100, value=20, step=1)*0.1)
+
+                with col4:
+                    if grouped_violin:
+                        st.empty()
+                    else:
+                        if st.checkbox("Separate by variable"):
+                            cat_names = st.selectbox("Category", name_list)
+                            violin_title = f'Violin plot of {violin_y_vals} by {violin_x_vals} divided by {cat_names}'
+                            legend_title = f'{cat_names}'
+                            if df[str(cat_names)].nunique() > 10:
+                                cat_color = px.colors.qualitative.Alphabet
+                            else:
+                                cat_color = None
+                        else:
+                            cat_names = violin_x_vals
+                    if binary_list:
+                        if st.checkbox("Split by variable"):
+                            split_plot = True
+                            split_names = st.selectbox("Split by", binary_list)
+                            split_left = str(df[str(split_names)].unique()[0])
+                            split_right = str(df[str(split_names)].unique()[1])
+                            legend_title = f'{split_names}'
+                            violin_title = f'Violin plot of {violin_y_vals} by {violin_x_vals} split by {split_names}'
+                        else:
+                            split_plot = False
+
+                with col5:
+                    if st.checkbox("View legend"):
+                        view_legend = True
+                    else:
+                        view_legend = False
+                    if st.checkbox("View data points"):
+                        view_points = "all"
+                    else:
+                        view_points = False
+                    if st.checkbox("Overlay box plot"):
+                        view_box = True
+                    else:
+                        view_box = False
+                if grouped_violin:
+                    group1 = go.Violin(x=df[f'{violin_x_vals}'],
+                                            y=df[f'{violin_y_vals}'], name=f"{violin_y_vals}",
+                                            box_visible=view_box, meanline_visible=True, points=view_points)
+                    group2 = go.Violin(x=df[f'{violin_x_vals}'],
+                                            y=df[f'{violin_y_vals_2}'], name=f"{violin_y_vals_2}",
+                                            box_visible=view_box, meanline_visible=True, points=view_points)
+
+                    fig = go.Figure(data=[group1, group2], layout={"violinmode": "group"})
+                    fig.update_layout(showlegend=view_legend, title_text=violin_title, legend_title_text=legend_title,
+                                      height=chart_height, width=1000,
+                                      violingap=float(cat_spacing * 0.10))
+
+                elif split_plot:
+                    fig = go.Figure()
+                    fig.add_trace(go.Violin(x=df[f'{violin_x_vals}'][df[f'{split_names}'] == split_left],
+                                            y=df[f'{violin_y_vals}'][df[f'{split_names}'] == split_left],
+                                            legendgroup='Yes', scalegroup='Yes', name=f"{split_left}",
+                                            side='negative', box_visible=view_box)
+                                  )
+                    fig.add_trace(go.Violin(x=df[f'{violin_x_vals}'][df[f'{split_names}'] == split_right],
+                                            y=df[f'{violin_y_vals}'][df[f'{split_names}'] == split_right],
+                                            legendgroup='No', scalegroup='No', name=f"{split_right}",
+                                            side='positive', box_visible=view_box)
+                                  )
+                    fig.update_traces(meanline_visible=True, width=cat_spacing, points=view_points)
+                    fig.update_layout(showlegend=view_legend, title_text=violin_title, legend_title_text=legend_title, height=chart_height,
+                                      violingap=float(cat_spacing * 0.10), violinmode='overlay')
+
+                else:
+                    fig = px.violin(df, x=f"{violin_x_vals}", y=f"{violin_y_vals}", color=f"{cat_names}", title=violin_title,
+                                    box=view_box, points=view_points, template=template, color_discrete_sequence=cat_color,
+                                    height=chart_height).update_traces(side=None, width=cat_spacing, meanline_visible=True)
+                    fig.update_layout(showlegend=view_legend, legend_title_text=legend_title)
+                st.plotly_chart(fig, use_container_width=True)
+
+
+        elif str(option) == "Line plot":
+            df = current_df
+            val_list = df.columns
+            name_list = df.columns
+            st.warning("Line charts work best with time series data, and the preloaded datasets don't really work here")
+            with st.beta_expander(f"View/Hide {option.lower()}", expanded=True):
+                col1, col2, col3, col4, col5 = st.beta_columns((1, 1, 1, 1, 1))
+                with col1:
+                    line_x_vals = st.selectbox("X-axis values", val_list)
+                with col2:
+                    line_y_vals = st.selectbox("Y-axis values", val_list)
+                with col3:
+                    if st.checkbox("Color line by variable"):
+                        line_names = st.selectbox("Color lines by", name_list)
+                        line_title = f'Line plot of {line_x_vals} by {line_y_vals} colored by {line_names}'
+                        legend_title = f'{line_names}'
+                        if df[str(line_names)].nunique() > 10:
+                            line_palette = px.colors.qualitative.Alphabet
+                        else:
+                            line_palette = None
+
+                    else:
+                        line_names = None
+                        line_palette = None
+                        legend_title = None
+                        line_title = f'Line plot of {line_x_vals} by {line_y_vals}'
+
+                with col4:
+                    if st.checkbox("View legend"):
+                        view_legend = True
+                    else:
+                        view_legend = False
+
+                with col5:
+                    st.empty()
+
+                fig = px.line(df, x=line_x_vals, y=line_y_vals, title=line_title,
+                                   color=line_names, template=template, color_discrete_sequence=line_palette)
+                fig.update_layout(showlegend=view_legend, legend_title_text=legend_title)
+                st.plotly_chart(fig, use_container_width=True)
+
+
         elif str(option) == "Joyplot":
             df = current_df
             val_list = [x for x in df.columns[df.dtypes != 'object']]
@@ -493,10 +645,10 @@ def main():
                 joy_title = f'Joyplot of {joy_vals} by {joy_name}'
                 legend_title = f"{joy_name}"
                 #st.help(px.violin)
-                fig = px.violin(df, y=joy_name, x=val_list,
-                                color=joy_name, orientation='h', range_x=range_x,
-                                title=joy_title, template=template, height=chart_height).update_traces(side='positive',
-                                                                                  width=cat_spacing)
+                fig = px.violin(df, y=joy_name, x=val_list, range_x=range_x,
+                                color=joy_name, orientation='h',
+                                title=joy_title, template=template,
+                                height=chart_height).update_traces(side='positive', width=cat_spacing)
                 fig.update_layout(showlegend=view_legend, legend_title_text=legend_title)
                 st.plotly_chart(fig, use_container_width=True)
 
