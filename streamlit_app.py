@@ -239,7 +239,7 @@ def main():
             current_df = pd.DataFrame()
 
     if len(current_df) != 0:
-        with st.beta_expander(f"View/Hide plotting options"):
+        with st.beta_expander(f"View/Hide plotting options", expanded=True):
             plotting_col1, plotting_col2, plotting_col3 = st.beta_columns((1, 1, 3))
             with plotting_col1:
                 option = st.selectbox('Select a display type',
@@ -259,30 +259,29 @@ def main():
             df = current_df
             x_list = [x for x in df.columns[df.dtypes != 'float64']]
             y_list = [x for x in df.columns[df.dtypes != 'object']]
-            with st.beta_expander(f"View/Hide {option.lower()}"):
-                col1, col2, col3, col4, col5 = st.beta_columns((1, 1, 2, 1, 1))
+            with st.beta_expander(f"View/Hide {option.lower()}", expanded=True):
+                col1, col2, col3, col4, col5 = st.beta_columns((1, 1, 1, 1, 1))
                 with col1:
                     x_axis = st.selectbox("X axis", x_list)
                 with col2:
                     y_axis = st.selectbox("Y axis", y_list)
-                with col4:
-                    st.write("\n")
-                    st.write("\n")
-                    if st.checkbox("See data points"):
-                        see_points = "all"
-                    else:
-                        see_points = False
+                with col3:
+                    chart_height = st.slider("Chart height", min_value=1, max_value=1440, value=500, step=1)
+                    chart_width = st.slider("Chart width", min_value=1, max_value=2880, value=500, step=1)
+
                 with col5:
-                    st.write("\n")
-                    st.write("\n")
                     if st.checkbox("View legend"):
                         view_legend = True
                     else:
                         view_legend = False
+                    if st.checkbox("View data points"):
+                        see_points = "all"
+                    else:
+                        see_points = False
 
-            fig = px.box(df, x=str(x_axis), y=str(y_axis), points=see_points, color=str(x_axis), template=template)
-            fig.update_layout(showlegend=view_legend)
-            st.plotly_chart(fig, use_container_width=True)
+                fig = px.box(df, x=str(x_axis), y=str(y_axis), points=see_points, color=str(x_axis), template=template)
+                fig.update_layout(showlegend=view_legend, height=chart_height, width=chart_width)
+                st.plotly_chart(fig, use_container_width=False)
 
         elif str(option) == "Scatter plots":
             df = current_df
@@ -300,13 +299,10 @@ def main():
                         color_num = None
                 with col2:
                     x_axis = st.selectbox("X axis", x_list)
-                with col3:
                     y_axis = st.selectbox("Y axis", y_list)
-                with col4:
-                    if st.checkbox("View legend"):
-                        view_legend = True
-                    else:
-                        view_legend = False
+                with col3:
+                    chart_height = st.slider("Chart height", min_value=1, max_value=1440, value=500, step=1)
+                    chart_width = st.slider("Chart width", min_value=1, max_value=2880, value=500, step=1)
                 with col5:
                     if st.checkbox("Scale points variable"):
                         point_size = st.selectbox("Point variable", size_list)
@@ -314,7 +310,6 @@ def main():
                     else:
                         point_size = None
                         figure_title = f"Scatter plot of {x_axis} by {y_axis}"
-                with col6:
                     if st.checkbox("Fit line"):
                         fit_dict = {"Ordinary least squares": "ols", "Local regression": "lowess"}
                         fit_list = [k for k, v in fit_dict.items()]
@@ -322,12 +317,20 @@ def main():
                         scatter_trendline = fit_dict[scatter_trendline]
                     else:
                         scatter_trendline = None
+                with col6:
+                    if st.checkbox("View legend"):
+                        view_legend = True
+                    else:
+                        view_legend = False
+
+
                 try:
                     fig = px.scatter(df, x=str(x_axis), y=str(y_axis), color=df[str(color_by)].astype(str),
                                      color_discrete_sequence=color_num, title=figure_title,
                                      size=point_size, trendline=scatter_trendline, template=template)
-                    fig.update_layout(showlegend=view_legend, legend_title_text=f'{color_by}')
-                    st.plotly_chart(fig, use_container_width=True)
+                    fig.update_layout(showlegend=view_legend, legend_title_text=f'{color_by}',
+                                      height=chart_height, width=chart_width)
+                    st.plotly_chart(fig, use_container_width=False)
                 except ValueError:
                     nans = df[str(point_size)].isnull().values.any()
                     if nans:
@@ -343,7 +346,7 @@ def main():
             y_list = [x for x in df.columns[df.dtypes != 'object']]
             z_list = [x for x in df.columns[df.dtypes != 'object']]
             with st.beta_expander(f"View/Hide {option.lower()}", expanded=True):
-                col1, col2, col3, col4, col5, col6 = st.beta_columns((1, 1, 1, 1, 1, 1))
+                col1, col2, col3, col4, col5 = st.beta_columns((1, 1, 1, 1, 1))
                 with col1:
                     color_by = st.selectbox("Color points by", color_list)
                     if df[str(color_by)].nunique() > 10:
@@ -352,16 +355,17 @@ def main():
                         color_num = None
                 with col2:
                     x_axis = st.selectbox("X axis", x_list)
-                with col3:
                     y_axis = st.selectbox("Y axis", y_list)
-                with col4:
                     z_axis = st.selectbox("Z axis", z_list)
+                with col3:
+                    chart_height = st.slider("Chart height", min_value=1, max_value=1440, value=500, step=1)
+                    chart_width = st.slider("Chart width", min_value=1, max_value=2880, value=720, step=1)
                 with col5:
                     if st.checkbox("View legend"):
                         view_legend = True
                     else:
                         view_legend = False
-                with col6:
+
                     if st.checkbox("Scale points variable"):
                         point_size = st.selectbox("Point variable", size_list)
                         figure_title = f"Scatter plot of {x_axis} by {y_axis} by {z_axis }with points scaled by {point_size}"
@@ -377,8 +381,9 @@ def main():
                                         color=df[str(color_by)].astype(str), color_discrete_sequence=color_num,
                                         size=point_size, title=figure_title,
                                         template=template)
-                    fig.update_layout(showlegend=view_legend, legend_title_text=f'{color_by}')
-                    st.plotly_chart(fig, use_container_width=True)
+                    fig.update_layout(showlegend=view_legend, legend_title_text=f'{color_by}',
+                                      height=chart_height, width=chart_width)
+                    st.plotly_chart(fig, use_container_width=False)
                 except ValueError:
                     nans = df[str(point_size)].isnull().values.any()
                     if nans:
@@ -498,6 +503,7 @@ def main():
 
                 with col3:
                     chart_height = st.slider("Chart height", min_value=1, max_value=1440, value=500, step=1)
+                    chart_width = st.slider("Chart width", min_value=1, max_value=1440, value=500, step=1)
                     cat_spacing = float(st.slider("Distribution overlap", min_value=1, max_value=100, value=20, step=1)*0.1)
 
                 with col4:
@@ -548,8 +554,7 @@ def main():
 
                     fig = go.Figure(data=[group1, group2], layout={"violinmode": "group"})
                     fig.update_layout(showlegend=view_legend, title_text=violin_title, legend_title_text=legend_title,
-                                      height=chart_height, width=1000,
-                                      violingap=float(cat_spacing * 0.10))
+                                      height=chart_height, width=chart_width, violingap=float(cat_spacing * 0.10))
 
                 elif split_plot:
                     fig = go.Figure()
@@ -564,15 +569,16 @@ def main():
                                             side='positive', box_visible=view_box)
                                   )
                     fig.update_traces(meanline_visible=True, width=cat_spacing, points=view_points)
-                    fig.update_layout(showlegend=view_legend, title_text=violin_title, legend_title_text=legend_title, height=chart_height,
+                    fig.update_layout(showlegend=view_legend, title_text=violin_title, legend_title_text=legend_title,
+                                      height=chart_height, width=chart_width,
                                       violingap=float(cat_spacing * 0.10), violinmode='overlay')
 
                 else:
                     fig = px.violin(df, x=f"{violin_x_vals}", y=f"{violin_y_vals}", color=f"{cat_names}", title=violin_title,
                                     box=view_box, points=view_points, template=template, color_discrete_sequence=cat_color,
-                                    height=chart_height).update_traces(side=None, width=cat_spacing, meanline_visible=True)
+                                    height=chart_height, width=chart_width).update_traces(side=None, width=cat_spacing, meanline_visible=True)
                     fig.update_layout(showlegend=view_legend, legend_title_text=legend_title)
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, use_container_width=False)
 
 
         elif str(option) == "Line plot":
@@ -636,6 +642,7 @@ def main():
                         range_x = [min_val, max_val]
                 with col3:
                     chart_height = st.slider("Chart height", min_value=1, max_value=1440, value=500, step=1)
+                    chart_width = st.slider("Chart width", min_value=1, max_value=2880, value=500, step=1)
                     cat_spacing = float(st.slider("Distribution overlap", min_value=1, max_value=100, value=20, step=1)*0.1)
                 with col5:
                     if st.checkbox("View legend"):
@@ -648,9 +655,9 @@ def main():
                 fig = px.violin(df, y=joy_name, x=val_list, range_x=range_x,
                                 color=joy_name, orientation='h',
                                 title=joy_title, template=template,
-                                height=chart_height).update_traces(side='positive', width=cat_spacing)
+                                height=chart_height, width=chart_width).update_traces(side='positive', width=cat_spacing)
                 fig.update_layout(showlegend=view_legend, legend_title_text=legend_title)
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, use_container_width=False)
 
 
         #This doesn't work on the streamlit hosted version, likely due to the unsafe html setting
