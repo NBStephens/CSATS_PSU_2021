@@ -262,9 +262,9 @@ def main():
             with st.beta_expander(f"View/Hide {option.lower()}", expanded=True):
                 col1, col2, col3, col4, col5 = st.beta_columns((1, 1, 1, 1, 1))
                 with col1:
-                    x_axis = st.selectbox("X axis", x_list)
+                    x_axis = st.selectbox("X-axis values", x_list)
                 with col2:
-                    y_axis = st.selectbox("Y axis", y_list)
+                    y_axis = st.selectbox("Y-axis values", y_list)
                 with col3:
                     chart_height = st.slider("Chart height", min_value=1, max_value=1440, value=500, step=1)
                     chart_width = st.slider("Chart width", min_value=1, max_value=2880, value=500, step=1)
@@ -290,7 +290,7 @@ def main():
             x_list = df.columns
             y_list = df.columns
             with st.beta_expander(f"View/Hide {option.lower()}", expanded=True):
-                col1, col2, col3, col4, col5, col6 = st.beta_columns((1, 1, 1, 1, 1, 1))
+                col1, col2, col3, col4, col5 = st.beta_columns((1, 1, 1, 1, 1))
                 with col1:
                     color_by = st.selectbox("Color points by", color_list)
                     if df[str(color_by)].nunique() > 10:
@@ -304,6 +304,10 @@ def main():
                     chart_height = st.slider("Chart height", min_value=1, max_value=1440, value=500, step=1)
                     chart_width = st.slider("Chart width", min_value=1, max_value=2880, value=500, step=1)
                 with col5:
+                    if st.checkbox("View legend"):
+                        view_legend = True
+                    else:
+                        view_legend = False
                     if st.checkbox("Scale points variable"):
                         point_size = st.selectbox("Point variable", size_list)
                         figure_title = f"Scatter plot of {x_axis} by {y_axis} with points scaled by {point_size}"
@@ -317,11 +321,6 @@ def main():
                         scatter_trendline = fit_dict[scatter_trendline]
                     else:
                         scatter_trendline = None
-                with col6:
-                    if st.checkbox("View legend"):
-                        view_legend = True
-                    else:
-                        view_legend = False
 
 
                 try:
@@ -403,6 +402,9 @@ def main():
                         pie_pie_names = None
                 with col2:
                     pie_vals = st.selectbox("Values", val_list)
+                with col3:
+                    chart_height = st.slider("Chart height", min_value=1, max_value=1440, value=500, step=1)
+                    chart_width = st.slider("Chart width", min_value=1, max_value=2880, value=720, step=1)
                 with col5:
                     if st.checkbox("View legend"):
                         view_legend = True
@@ -420,8 +422,9 @@ def main():
                                  template=template, color_discrete_sequence=pie_pie_names)
                     fig.update_traces(textposition='inside', textinfo='percent+label', insidetextorientation='radial')
                     fig.update_layout(showlegend=view_legend, legend_title_text=f'{pie_names}',
-                                      uniformtext_minsize=12, uniformtext_mode=small_text)
-                    st.plotly_chart(fig, use_container_width=True)
+                                      uniformtext_minsize=12, uniformtext_mode=small_text,
+                                      height=chart_height, width=chart_width)
+                    st.plotly_chart(fig, use_container_width=False)
                 except ValueError:
                     st.write("Select your x axis and y axis from the dropdowns")
 
@@ -430,7 +433,7 @@ def main():
             val_list = [x for x in df.columns[df.dtypes != 'object']]
             name_list = df.columns
             with st.beta_expander(f"View/Hide {option.lower()}", expanded=True):
-                col1, col2, col3, col4, col5 = st.beta_columns((1, 3, 1, 1, 1))
+                col1, col2, col3, col4, col5 = st.beta_columns((1, 1, 1, 1, 1))
                 with col1:
                     hist_vals = st.selectbox("X-axis values", val_list)
                 with col2:
@@ -438,12 +441,15 @@ def main():
                     bin_num = st.slider("Number of bins", min_value=1, max_value=max_slider, value=int(max_slider*0.5))
                     bar_opacity = float(st.slider("Bar opacity", min_value=0, max_value=100, value=80)/100)
                 with col3:
+                    chart_height = st.slider("Chart height", min_value=1, max_value=1440, value=500, step=1)
+                    chart_width = st.slider("Chart width", min_value=1, max_value=2880, value=720, step=1)
+
+                with col5:
                     if st.checkbox("View legend"):
                         view_legend = True
                     else:
                         view_legend = False
 
-                with col4:
                     if st.checkbox("Plot by variable"):
                         cat_names = st.selectbox("Category", name_list)
                         hist_title = f'Histogram of {hist_vals} by {cat_names}'
@@ -459,7 +465,7 @@ def main():
                             cat_color = None
                     else:
                         cat_color = None
-                with col5:
+
                     if st.checkbox("Log values"):
                         log_val = True
                     else:
@@ -469,8 +475,8 @@ def main():
                                        color=cat_names, nbins=bin_num,
                                        opacity=bar_opacity, log_y=log_val,  # represent bars with log scale
                                        template=template, color_discrete_sequence=cat_color)
-                    fig.update_layout(showlegend=view_legend, legend_title_text=legend_title)
-                    st.plotly_chart(fig, use_container_width=True)
+                    fig.update_layout(showlegend=view_legend, legend_title_text=legend_title, height=chart_height, width=chart_width)
+                    st.plotly_chart(fig, use_container_width=False)
                 except ValueError:
                     st.write("Select your x axis and y axis from the dropdowns")
 
@@ -593,6 +599,15 @@ def main():
                 with col2:
                     line_y_vals = st.selectbox("Y-axis values", val_list)
                 with col3:
+                    chart_height = st.slider("Chart height", min_value=1, max_value=1440, value=500, step=1)
+                    chart_width = st.slider("Chart width", min_value=1, max_value=2880, value=720, step=1)
+
+                with col5:
+                    if st.checkbox("View legend"):
+                        view_legend = True
+                    else:
+                        view_legend = False
+
                     if st.checkbox("Color line by variable"):
                         line_names = st.selectbox("Color lines by", name_list)
                         line_title = f'Line plot of {line_x_vals} by {line_y_vals} colored by {line_names}'
@@ -608,19 +623,11 @@ def main():
                         legend_title = None
                         line_title = f'Line plot of {line_x_vals} by {line_y_vals}'
 
-                with col4:
-                    if st.checkbox("View legend"):
-                        view_legend = True
-                    else:
-                        view_legend = False
 
-                with col5:
-                    st.empty()
-
-                fig = px.line(df, x=line_x_vals, y=line_y_vals, title=line_title,
-                                   color=line_names, template=template, color_discrete_sequence=line_palette)
-                fig.update_layout(showlegend=view_legend, legend_title_text=legend_title)
-                st.plotly_chart(fig, use_container_width=True)
+                fig = px.line(df, x=line_x_vals, y=line_y_vals, title=line_title, color=line_names, template=template, color_discrete_sequence=line_palette)
+                fig.update_layout(showlegend=view_legend, legend_title_text=legend_title,
+                                  height=chart_height, width=chart_width)
+                st.plotly_chart(fig, use_container_width=False)
 
 
         elif str(option) == "Joyplot":
@@ -628,7 +635,7 @@ def main():
             val_list = [x for x in df.columns[df.dtypes != 'object']]
             name_list = [x for x in df.columns[df.dtypes != 'float64']]
             with st.beta_expander(f"View/Hide {option.lower()}", expanded=True):
-                col1, col2, col3, col4, col5, col6 = st.beta_columns((1, 1, 2, 1, 1, 1))
+                col1, col2, col3, col4, col5 = st.beta_columns((1, 1, 1, 1, 1))
                 with col1:
                     joy_name = st.selectbox("Groups", name_list)
                 with col2:
