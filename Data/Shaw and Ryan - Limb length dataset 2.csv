@@ -1,0 +1,113 @@
+﻿ID,Species,SpeciesCode,Locomotion,FemurLength,HumerusLength,FemurHeadSize,HumerusHeadSize
+AC1,Alouatta caraya,1,4,147.3,145.2,13.77,18.17
+AC2,Alouatta caraya,1,4,144.33,138.5,13.48,18.22
+AC3,Alouatta caraya,1,4,145.04,140.79,13.67,17.79
+AC4,Alouatta caraya,1,4,153.2,145.4,14.35,16.91
+AC5,Alouatta caraya,1,4,157.5,153,13.98,18.3
+AC6,Alouatta caraya,1,4,147.4,145.1,12.85,16.73
+AC7,Alouatta caraya,1,4,156.2,142.5,14.18,16.77
+AC8,Alouatta caraya,1,4,156.3,146.2,13.79,17.29
+AC9,Alouatta caraya,1,4,151.2,142.1,14.49,17.77
+AC10,Alouatta caraya,1,4,157,157.5,13.88,19.15
+AC11,Alouatta caraya,1,4,168,160,15.03,19.19
+AC12,Alouatta caraya,1,4,170,167.4,16.19,19.03
+AC13,Alouatta caraya,1,4,165,162.8,14.71,18.81
+HS1,Homo sapiens,2,1,402,285,37.55,39.63
+HS2,Homo sapiens,2,1,409,306,41.03,42
+HS3,Homo sapiens,2,1,394.5,301,41.82,43.69
+HS4,Homo sapiens,2,1,384,277,41.01,37.53
+HS5,Homo sapiens,2,1,411,296,39.84,39.39
+HS6,Homo sapiens,2,1,402,290,44.02,44.15
+HS7,Homo sapiens,2,1,469.5,337,47.11,47.53
+HS8,Homo sapiens,2,1,451,324,50.06,47.47
+HS9,Homo sapiens,2,1,453,323,45.3,46.89
+HS10,Homo sapiens,2,1,429,306,42.16,43.01
+HS11,Homo sapiens,2,1,384,282,42.6,39.69
+HS12,Homo sapiens,2,1,411,307,38.77,38.36
+HS13,Homo sapiens,2,1,437,316,45.79,44.77
+HS14,Homo sapiens,2,1,414,285,43.2,41.61
+HS15,Homo sapiens,2,1,396,287,43.59,41.5
+HS16,Homo sapiens,2,1,424.5,302,46.18,43.98
+HS17,Homo sapiens,2,1,457,324,49.32,45.58
+HS18,Homo sapiens,2,1,425,296,39.6,39.05
+HS19,Homo sapiens,2,1,427.5,326,48.62,45.71
+HS20,Homo sapiens,2,1,434,323,47.37,45.26
+MF1,Macaca fascicularis,3,3,122,109,10.52,10.77
+MF2,Macaca fascicularis,3,3,130,118.5,10.77,11.96
+MF3,Macaca fascicularis,3,3,120,110,10.15,11.21
+MF4,Macaca fascicularis,3,3,116,105,9.86,11.22
+MF5,Macaca fascicularis,3,3,129,118,10.86,11.57
+MF6,Macaca fascicularis,3,3,119,112,10.93,12.32
+MF7,Macaca fascicularis,3,3,111,105,12.67,10.51
+MF8,Macaca fascicularis,3,3,117,114,11.69,10.75
+MF9,Macaca fascicularis,3,3,124,115,11.7,12.46
+MF10,Macaca fascicularis,3,3,144,129,12.91,13.76
+MF11,Macaca fascicularis,3,3,143,128,13.11,14.11
+MF12,Macaca fascicularis,3,3,139,127,12.98,12.76
+MF13,Macaca fascicularis,3,3,139,127,12.88,13.7
+MF14,Macaca fascicularis,3,3,145,128,11.79,13.28
+MF15,Macaca fascicularis,3,3,127,120,11.69,12.34
+MF16,Macaca fascicularis,3,3,139,124,13.33,14.4
+MF17,Macaca fascicularis,3,3,130,115,11.66,11.77
+MF18,Macaca fascicularis,3,3,146,131,12.36,13.87
+MF19,Macaca fascicularis,3,3,154,136,13.4,13.26
+PT1,Pan troglodytes,4,2,305,311,37.28,42.97
+PT2,Pan troglodytes schweinfurthii,4,2,295.2,295.9,33.91,35.33
+PT3,Pan troglodytes schweinfurthii,4,2,314.8,322.7,32.64,38.81
+PT4,Pan troglodytes schweinfurthii,4,2,318.2,318.2,34.55,39.86
+PT5,Pan troglodytes schweinfurthii,4,2,289.7,296,31.94,36.27
+PT6,Pan troglodytes schweinfurthii,4,2,287.8,305.9,30.34,31.62
+PT7,Pan troglodytes schweinfurthii,4,2,298.3,317.3,36.32,39.16
+PT8,Pan troglodytes schweinfurthii,4,2,285.6,305.9,34.64,36.71
+PT9,Pan troglodytes troglodytes,4,2,294.2,293,32.86,37.54
+PT10,Pan troglodytes troglodytes,4,2,323,322,36.62,41.83
+PT11,Pan troglodytes troglodytes,4,2,307,312,33.37,41.71
+PT12,Pan troglodytes verus,4,2,281,293,30.76,36.88
+PT13,Pan troglodytes verus,4,2,290,281,32.25,39.2
+PT14,Pan troglodytes verus,4,2,294,295,31.47,29.82
+PT15,Pan troglodytes verus,4,2,277.5,288,30.56,34.4
+PT16,Pan troglodytes verus,4,2,321,331.5,31.94,32.7
+PT17,Pan troglodytes verus,4,2,310,305,31.11,32.49
+PA1,Papio anubis,5,2,248,223,26.33,26.43
+PA2,Papio cynocephalus,5,2,195,179,19.36,17.26
+PA3,Papio cynocephalus,5,2,210,182,19.61,15.44
+PA4,Papio cynocephalus,5,2,211.5,185,18.65,17.5
+PA5,Papio hamadryas,5,2,288.4,240.5,24.21,25.81
+PA6,Papio hamadryas,5,2,236.5,203.2,21.47,23
+PA7,Papio hamadryas,5,2,268.5,242,25.26,25.92
+PA8,Papio hamadryas,5,2,220.1,193.7,21.33,20.62
+PA9,Papio ursinus,5,2,244.9,217.5,21.38,19.6
+PA10,Papio ursinus,5,2,300.6,250.8,24.95,26.74
+PA11,Papio ursinus,5,2,251.2,228.8,23.34,23.53
+PP1,Pongo pygmaeus,6,5,291,381,37.57,50.03
+PP2,Pongo pygmaeus,6,5,298,408,35.49,48.12
+PP3,Pongo pygmaeus,6,5,254,323,31.87,42.16
+PP4,Pongo pygmaeus,6,5,245,325,29.28,34.76
+PP5,Pongo pygmaeus,6,5,289,362,40.79,50.02
+PP6,Pongo pygmaeus,6,5,283,343,39.58,48.37
+PP7,Pongo pygmaeus,6,5,303,384,39.35,51.6
+PC1,Presbytis cristata,7,3,174,141,14.42,14.35
+PC2,Presbytis cristata,7,3,180,142,14.22,13.77
+PC3,Presbytis cristata,7,3,176,141.5,13.59,13.45
+PC4,Presbytis cristata,7,3,171,135,13.95,14.03
+PC5,Presbytis cristata,7,3,173,138,14.54,14.75
+PC6,Presbytis cristata,7,3,178,139,14.88,17.78
+PC7,Presbytis cristata,7,3,174.36,174,,13.48
+PC8,Presbytis cristata,7,3,157.5,136,12.18,12.96
+PC9,Presbytis cristata,7,3,173,137,14.07,13.55
+PC10,Presbytis cristata,7,3,177,144.5,14.92,14.2
+PC11,Presbytis cristata,7,3,189,149,15.3,15.26
+PC12,Presbytis cristata,7,3,182,145,14.2,14.6
+PC13,Presbytis cristata,7,3,172,137,15.01,14.44
+PC14,Presbytis cristata,7,3,167,133,14.87,13.39
+PC15,Presbytis cristata,7,3,161,130,13.74,13.48
+PC16,Presbytis cristata,7,3,173,139,14.19,13.89
+PC17,Presbytis cristata,7,3,183,148,14.98,13.46
+PC18,Presbytis cristata,7,3,163,134,12.8,12.46
+SS1,Symphalangus syndactylus,8,6,220,283,22.78,24.4
+SS2,Symphalangus syndactylus,8,6,204,250,19.49,21.48
+SS3,Symphalangus syndactylus,8,6,207,259,19.89,22.61
+SS4,Symphalangus syndactylus,8,6,202,265,19.95,22.29
+SS5,Symphalangus syndactylus,8,6,192.5,253,19.16,21.05
+SS6,Symphalangus syndactylus,8,6,207,270,18.27,15.15
+SS7,Symphalangus syndactylus,8,6,212,274,21.11,21.3
